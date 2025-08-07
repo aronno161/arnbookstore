@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Details - ARN Book Store</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <header></header>
@@ -17,7 +17,7 @@
 
     <footer></footer>
 
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.getElementById('book-details-container');
@@ -39,7 +39,7 @@
                             <p class="author">by ${book.author}</p>
                             <p class="description">${book.description}</p>
                             <p class="price">$${book.price.toFixed(2)}</p>
-                            <a href="payment.html?id=${book.id}" class="btn btn-primary">Buy Now</a>
+                            <a href="/payment.html?id=${book.id}" class="btn btn-primary">Buy Now</a>
 
                             <div class="book-preview">
                                 <h3>Sample Preview</h3>
