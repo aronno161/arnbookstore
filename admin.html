@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - ARN Book Store</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <header></header>
@@ -12,7 +12,6 @@
     <main>
         <div class="container">
             <div id="admin-login">
-                <!-- Login form remains the same -->
                 <h1 class="section-title">Admin Login</h1>
                 <form id="login-form">
                     <div class="form-group">
@@ -29,7 +28,6 @@
 
             <div id="admin-panel" style="display: none;">
                 <h1 class="section-title">Admin Dashboard</h1>
-
                 <div class="admin-form-container">
                     <h2 id="form-title">Add New Book</h2>
                     <form id="book-form">
@@ -43,28 +41,23 @@
                             <input type="text" id="author" required>
                         </div>
                         <div class="form-group">
-                            <label for="price">Price (Taka)</label>
+                            <label for="price">Price ($)</label>
                             <input type="number" id="price" step="0.01" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
                             <textarea id="description" rows="4" required></textarea>
                         </div>
-                        
-                        <!-- UPDATED: File input for cover image -->
                         <div class="form-group">
                             <label for="coverImageFile">Cover Image</label>
                             <input type="file" id="coverImageFile" accept="image/*" required>
                             <img id="cover-preview" src="#" alt="Cover Preview" style="display: none; max-width: 100px; margin-top: 10px;">
                         </div>
-                        
-                        <!-- UPDATED: File input for eBook PDF -->
                         <div class="form-group">
                             <label for="pdfFile">eBook File (PDF)</label>
                             <input type="file" id="pdfFile" accept=".pdf" required>
                              <small class="file-info-text">For large files, this may be slow. Not recommended for PDFs over 2MB.</small>
                         </div>
-                        
                         <button type="submit" class="btn btn-primary">Save Book</button>
                     </form>
                 </div>
@@ -79,9 +72,7 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="book-list-table">
-                        <!-- Book list will be loaded here by JS -->
-                    </tbody>
+                    <tbody id="book-list-table"></tbody>
                 </table>
             </div>
         </div>
@@ -89,7 +80,7 @@
 
     <footer></footer>
 
-    <script src="js/main.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/admin.js"></script>
 </body>
 </html>
