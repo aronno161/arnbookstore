@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - ARN Book Store</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header></header>
+    
+    <main>
+        <div class="container">
+             <div class="payment-container">
+                <h1 class="section-title">Complete Your Purchase</h1>
+                
+                <div id="selected-book-info" class="payment-book-info">
+                    <!-- Selected book info loaded here by JS -->
+                </div>
+                
+                <div id="ruoantorpay-widget">
+                    <h3>Select a Payment Method</h3>
+                    <button>Pay with bKash</button>
+                    <button>Pay with Nagad</button>
+                    <button>Pay with Rocket</button>
+                    <button>Pay with Upay</button>
+                </div>
+                
+                <div id="payment-success" style="display: none;">
+                    <!-- Success message and download link appear here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>
