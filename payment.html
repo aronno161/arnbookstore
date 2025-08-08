@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Payment - ARN Book Store</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header></header>
+    
+    <main>
+        <div class="container">
+             <div class="payment-container">
+                <h1 class="section-title">Complete Your Payment</h1>
+                
+                <div id="selected-book-info" class="payment-book-info"></div>
+
+                <div id="manual-payment-instructions">
+                    <h3>Follow these steps:</h3>
+                    <ol class="payment-steps">
+                        <li>Open your bKash or Nagad app.</li>
+                        <li>Select the "Send Money" option.</li>
+                        <li>
+                            Enter one of the numbers below:
+                            <div class="payment-number-container">
+                                <span>bKash: <strong>01729405568</strong></span>
+                                <button class="copy-btn" data-number="01729405568">Copy</button>
+                            </div>
+                            <div class="payment-number-container">
+                                <span>Nagad: <strong>01729405568</strong></span>
+                                <button class="copy-btn" data-number="01729405568">Copy</button>
+                            </div>
+                        </li>
+                        <li>Enter the book amount and complete the payment.</li>
+                        <li>Save the **Transaction ID (TrxID)** from the confirmation message.</li>
+                    </ol>
+                    <button id="proceed-to-verify-btn" class="btn btn-primary" style="width: 100%;">I Have Paid, Continue</button>
+                </div>
+
+                <div id="trxid-form-section" style="display: none;">
+                    <h3>Verify Your Payment</h3>
+                    <p>Please enter your email and the Transaction ID. We will review your payment shortly.</p>
+                    <form id="trxid-form">
+                        <div class="form-group">
+                            <label for="email">Your Email Address</label>
+                            <input type="email" id="email" name="customer_email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trxid">Transaction ID (TrxID)</label>
+                            <input type="text" id="trxid" name="transaction_id" placeholder="e.g., 9C4B7F1D8E" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Submit for Verification</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer></footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="/js/firebase-config.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/payment.js"></script>
+</body>
+</html>

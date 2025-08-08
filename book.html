@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details - ARN Book Store</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header></header>
+    <main>
+        <div class="container" id="book-details-container">
+            <!-- Book details will be loaded here by JS -->
+        </div>
+    </main>
+    <footer></footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('book-details-container');
+            const params = new URLSearchParams(window.location.search);
+            const bookId = parseInt(params.get('id'));
+
+            const books = getBooks();
+            const book = books.find(b => b.id === bookId);
+
+            if (book) {
+                document.title = `${book.title} - ARN Book Store`;
+                // --- Create the HTML for the page ---
+                container.innerHTML = `
+                    <div class="book-details-layout">
+                        <div class="book-cover-large">
+                            <img src="${book.coverImage}" alt="${book.title}">
+                        </div>
+                        <div class="book-info">
+                            <h1>${book.title}</h1>
+                            <p class="author">by ${book.author}</p>
+                            <p class="description">${book.description}</p>
+                            <p class="price">৳${book.price.toFixed(2)}</p>
+                            <!-- ADDED an ID to the Buy Now button -->
+                            <a href="/payment.html?id=${book.id}" id="buy-now-btn" class="btn btn-primary">Buy Now</a>
+                            <div class="book-preview">
+                                <h3>Sample Preview</h3>
+                                <img src="${book.coverImage}" alt="Book Preview" style="max-width: 200px; border: 1px solid #ddd;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // --- NEW: Add event listener to the Buy Now button ---
+                const buyNowBtn = document.getElementById('buy-now-btn');
+                buyNowBtn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Stop the link from navigating immediately
+                    const isUserLoggedIn = sessionStorage.getItem('currentUser') !== null;
+
+                    if (isUserLoggedIn) {
+                        window.location.href = buyNowBtn.href;
+                    } else {
+                        alert('Please sign in to purchase this book.');
+                        window.location.href = '/signin.html';
+                    }
+                });
+
+            } else {
+                container.innerHTML = '<p class="section-title">Book not found.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
