@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARN Book Store</title>
+
+    <!-- 1. COMBINED CSS -->
+    <style>
+        /* --- Google Font Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* --- Global Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        /* --- Page Container for SPA --- */
+        .page-container {
+            display: none; /* All pages are hidden by default */
+        }
+
+        /* --- Header & Footer --- */
+        header, footer {
+            background-color: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        header {
+            position: relative;
+            z-index: 100;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #007bff;
+        }
+
+        footer p {
+            color: #777;
+        }
+
+        /* --- Main Content --- */
+        main {
+            padding: 2rem 0;
+            min-height: 80vh;
+        }
+
+        .tagline {
+            text-align: center;
+            margin: 1rem 0 2rem 0;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* --- Utility & Button Classes --- */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        /* --- Book Grid & Cards --- */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .book-card-content {
+            padding: 1rem;
+        }
+
+        .book-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-card p {
+            color: #777;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-card .price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Search Bar --- */
+        .search-bar {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+
+        /* --- Single Book Page --- */
+        .book-details-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: flex-start;
+        }
+
+        .book-cover-large img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .book-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-info .author {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .book-info .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007bff;
+            margin: 1.5rem 0;
+        }
+
+        .book-info .description {
+            margin-bottom: 1.5rem;
+        }
+
+        .book-preview {
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 2rem;
+        }
+
+        .book-preview h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* --- Payment & Orders Page --- */
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .payment-book-info {
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-steps {
+            list-style-position: inside;
+            margin-bottom: 1.5rem;
+            padding-left: 5px;
+        }
+
+        .payment-steps li {
+            margin-bottom: 1rem;
+        }
+
+        .payment-number-container {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-number-container strong {
+            color: #007bff;
+            font-size: 1.1rem;
+        }
+
+        .copy-btn {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .copy-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .order-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .order-card h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .order-card p {
+            color: #555;
+            margin-bottom: 0.25rem;
+        }
+
+        /* --- Admin & Auth Forms --- */
+        .admin-form-container, .auth-form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .auth-form-container .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #555;
+        }
+
+        .admin-book-table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+
+        .admin-book-table th, .admin-book-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .admin-book-table th {
+            background-color: #f2f2f2;
+        }
+
+        .admin-book-table td .btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+
+        .file-info-text {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        /* --- Responsive Navigation & Hamburger Menu --- */
+        .hamburger-menu {
+            display: none;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        nav .btn {
+            padding: 8px 20px;
+            border: 2px solid #007bff;
+            background-color: transparent;
+            color: #007bff;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        nav .btn:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        /* --- Responsive Media Queries --- */
+        @media (max-width: 768px) {
+            .book-details-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-book-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            header nav {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 250px;
+                background-color: #fff;
+                box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 6rem;
+                z-index: 100;
+            }
+
+            header nav.nav-active {
+                transform: translateX(0);
+            }
+            
+            header nav ul {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            header nav ul li {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .hamburger-menu {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                width: 30px;
+                height: 25px;
+                padding: 0;
+            }
+
+            .hamburger-menu span {
+                width: 30px;
+                height: 3px;
+                background-color: #333;
+                border-radius: 5px;
+                transition: all 0.3s linear;
+                position: relative;
+                transform-origin: center;
+            }
+
+            .hamburger-menu.active span:nth-child(1) {
+              transform: translateY(8px) rotate(45deg);
+            }
+            .hamburger-menu.active span:nth-child(2) {
+              opacity: 0;
+            }
+            .hamburger-menu.active span:nth-child(3) {
+              transform: translateY(-8px) rotate(-45deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 2. HTML SKELETON -->
+    <header>
+        <!-- Header content will be dynamically generated by JS -->
+    </header>
+
+    <main id="app-container">
+        <!-- All page content is here. JS will show/hide the relevant page. -->
+
+        <!-- From: index.html -->
+        <div id="page-home" class="page-container">
+             <div class="container">
+                <h1 class="tagline">Buy and Read Amazing eBooks Instantly</h1>
+                <div class="search-bar">
+                    <form id="home-search-form">
+                        <input type="search" name="q" placeholder="Search for books by title or author...">
+                    </form>
+                </div>
+                <h2 class="section-title">Featured Books</h2>
+                <div id="featured-books-grid" class="book-grid"></div>
+            </div>
+        </div>
+
+        <!-- From: admin.html -->
+        <div id="page-admin" class="page-container">
+            <div class="container">
+                <div id="admin-login-section" class="auth-form-container">
+                    <h1 class="section-title">Admin Login</h1>
+                    <form id="admin-login-form">
+                        <div class="form-group">
+                            <label for="admin-username">Username</label>
+                            <input type="text" id="admin-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-password">Password</label>
+                            <input type="password" id="admin-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+                <div id="admin-panel" style="display: none;">
+                    <h1 class="section-title">Admin Dashboard</h1>
+                    <div class="admin-form-container">
+                        <h2 id="form-title">Add New Book</h2>
+                        <form id="book-form">
+                            <input type="hidden" id="book-id">
+                            <div class="form-group"><label for="book-title">Title</label><input type="text" id="book-title" required></div>
+                            <div class="form-group"><label for="book-author">Author</label><input type="text" id="book-author" required></div>
+                            <div class="form-group"><label for="book-price">Price (Taka)</label><input type="number" id="book-price" step="0.01" required></div>
+                            <div class="form-group"><label for="book-description">Description</label><textarea id="book-description" rows="4" required></textarea></div>
+                            <div class="form-group">
+                                <label for="coverImageFile">Cover Image</label>
+                                <input type="file" id="coverImageFile" accept="image/*">
+                                <small id="uploadStatus" class="file-info-text">Select a new image to upload and get a link.</small>
+                            </div>
+                            <input type="hidden" id="coverImageURL">
+                            <div class="form-group">
+                                <label for="pdfLink">eBook PDF Link</label>
+                                <input type="url" id="pdfLink" required placeholder="https://drive.google.com/file/d/example/view">
+                                <small class="file-info-text">Upload PDF to a site like Google Drive and paste the public share link here.</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Book</button>
+                        </form>
+                    </div>
+                    <h2 class="section-title" style="margin-top: 3rem;">Manage Books</h2>
+                    <table class="admin-book-table">
+                        <thead><tr><th>Title</th><th>Author</th><th>Price</th><th>Actions</th></tr></thead>
+                        <tbody id="book-list-table"></tbody>
+                    </table>
+                    <h2 class="section-title" style="margin-top: 3rem;">Pending Order Requests</h2>
+                    <table class="admin-book-table">
+                        <thead><tr><th>User Email</th><th>Book Title</th><th>Transaction ID</th><th>Actions</th></tr></thead>
+                        <tbody id="order-requests-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- From: book.html (details page) -->
+        <div id="page-book-details" class="page-container">
+            <div class="container" id="book-details-container"></div>
+        </div>
+
+        <!-- From: books.html (all books list) -->
+        <div id="page-all-books" class="page-container">
+            <div class="container">
+                <h1 class="section-title">All Available Books</h1>
+                <div class="search-bar">
+                    <input type="search" id="search-input" placeholder="Filter books by title or author...">
+                </div>
+                <div id="all-books-grid" class="book-grid"></div>
+            </div>
+        </div>
+
+        <!-- From: orders.html -->
+        <div id="page-orders" class="page-container">
+            <div class="container">
+                <h1 class="section-title">Your Orders</h1>
+                <div id="orders-list"><p>Loading your orders...</p></div>
+            </div>
+        </div>
+
+        <!-- From: payment.html -->
+        <div id="page-payment" class="page-container">
+             <div class="container">
+                <div class="payment-container" id="payment-content-wrapper">
+                    <!-- Content generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- From: signin.html -->
+        <div id="page-signin" class="page-container">
+            <div class="container">
+                <div class="auth-form-container">
+                    <h1 class="section-title">Sign In</h1>
+                    <form id="signin-form">
+                        <div class="form-group"><label for="signin-email">Email Address</label><input type="email" id="signin-email" required></div>
+                        <div class="form-group"><label for="signin-password">Password</label><input type="password" id="signin-password" required></div>
+                        <button type="submit" class="btn btn-primary">Sign In</button>
+                    </form>
+                    <p class="switch-form">Don't have an account? <a data-page="page-signup">Sign Up</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- From: signup.html -->
+        <div id="page-signup" class="page-container">
+            <div class="container">
+                <div class="auth-form-container">
+                    <h1 class="section-title">Create an Account</h1>
+                    <form id="signup-form">
+                        <div class="form-group"><label for="signup-name">Full Name</label><input type="text" id="signup-name" required></div>
+                        <div class="form-group"><label for="signup-email">Email Address</label><input type="email" id="signup-email" required></div>
+                        <div class="form-group"><label for="signup-password">Password</label><input type="password" id="signup-password" required></div>
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </form>
+                    <p class="switch-form">Already have an account? <a data-page="page-signin">Sign In</a></p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <footer>
+        <!-- Footer content will be dynamically generated by JS -->
+    </footer>
+
+    <!-- 3. FIREBASE & JAVASCRIPT -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- GLOBAL APP STATE & CONFIG ---
+            let database, auth;
+            const app = {
+                pages: document.querySelectorAll('.page-container'),
+                currentUser: null,
+                isAdmin: false,
+                books: []
+            };
+
+            // --- CORE APP LOGIC ---
+
+            /**
+             * Main application initializer. Runs once on page load.
+             */
+            function init() {
+                // Initialize Firebase connection
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC_Mwfx-HmOW7myFCroTxDElgpGdwZvTVs",
+                    authDomain: "arn-book-store.firebaseapp.com",
+                    databaseURL: "https://arn-book-store-default-rtdb.firebaseio.com/",
+                    projectId: "arn-book-store",
+                    storageBucket: "arn-book-store.appspot.com",
+                    messagingSenderId: "967954017733",
+                    appId: "1:967954017733:web:336bcdc08eb5cf37c9afac",
+                    measurementId: "G-L4N0H9H9YV"
+                };
+                try {
+                    firebase.initializeApp(firebaseConfig);
+                    database = firebase.database();
+                    auth = firebase.auth();
+                } catch (error) {
+                    console.error("Firebase initialization failed:", error);
+                    alert("Fatal Error: Could not connect to application services. Please refresh the page.");
+                    return;
+                }
+
+                // Load initial state
+                app.currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
+                app.isAdmin = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+                loadBooks();
+
+                // Setup static components and global listeners
+                setupHeader();
+                setupFooter();
+                attachGlobalListeners();
+                
+                // Show the initial page (home)
+                showPage('page-home');
+            }
+
+            /**
+             * The SPA Router. Hides all pages and shows the requested one.
+             * Also triggers page-specific setup functions.
+             * @param {string} pageId - The ID of the page container to show.
+             * @param {object} [params=null] - Optional parameters to pass to the page setup function.
+             */
+            function showPage(pageId, params = null) {
+                app.pages.forEach(page => page.style.display = 'none');
+                const activePage = document.getElementById(pageId);
+                
+                if (activePage) {
+                    activePage.style.display = 'block';
+                    window.scrollTo(0, 0);
+
+                    // Run page-specific setup logic
+                    // This is key to avoiding errors by only setting up visible elements
+                    switch (pageId) {
+                        case 'page-home': setupHomePage(); break;
+                        case 'page-all-books': setupAllBooksPage(); break;
+                        case 'page-book-details': renderBookDetails(params.id); break;
+                        case 'page-payment': setupPaymentPage(params.id); break;
+                        case 'page-orders': setupOrdersPage(); break;
+                        case 'page-admin': setupAdminPage(); break;
+                        case 'page-signin': setupSignInPage(); break;
+                        case 'page-signup': setupSignUpPage(); break;
+                    }
+                } else {
+                    console.error(`Page with ID "${pageId}" not found. Showing home page.`);
+                    document.getElementById('page-home').style.display = 'block';
+                }
+
+                // Close mobile nav menu if open
+                const nav = document.querySelector('header nav');
+                const hamburger = document.querySelector('.hamburger-menu');
+                if (nav?.classList.contains('nav-active')) {
+                    nav.classList.remove('nav-active');
+                    hamburger?.classList.remove('active');
+                }
+            }
+
+            /**
+             * Attaches global event listeners using event delegation.
+             */
+            function attachGlobalListeners() {
+                // Main navigation and action handler
+                document.body.addEventListener('click', (e) => {
+                    const target = e.target.closest('[data-page], #logout-btn, .copy-btn, .edit-btn, .delete-btn, .approve-btn, .reject-btn');
+                    if (!target) return;
+
+                    // Navigation
+                    if (target.dataset.page) {
+                        e.preventDefault();
+                        const pageId = target.dataset.page;
+                        const bookId = target.dataset.bookId ? parseInt(target.dataset.bookId) : null;
+                        const isProtected = ['page-book-details', 'page-payment', 'page-orders'].includes(pageId);
+
+                        if (isProtected && !app.currentUser) {
+                            alert('Please sign in to continue.');
+                            showPage('page-signin');
+                        } else {
+                            showPage(pageId, bookId ? { id: bookId } : null);
+                        }
+                    }
+
+                    // Logout
+                    if (target.id === 'logout-btn') {
+                        e.preventDefault();
+                        sessionStorage.removeItem('currentUser');
+                        sessionStorage.removeItem('isAdminLoggedIn');
+                        app.currentUser = null;
+                        app.isAdmin = false;
+                        alert('You have been logged out.');
+                        setupHeader();
+                        showPage('page-home');
+                    }
+                    
+                    // Admin Book Actions
+                    if(target.classList.contains('edit-btn')) handleAdminEditBook(target);
+                    if(target.classList.contains('delete-btn')) handleAdminDeleteBook(target);
+
+                    // Admin Order Actions
+                    if(target.classList.contains('approve-btn')) handleAdminApproveOrder(target);
+                    if(target.classList.contains('reject-btn')) handleAdminRejectOrder(target);
+
+                    // Utility
+                    if (target.classList.contains('copy-btn')) {
+                        navigator.clipboard.writeText(target.dataset.number).then(() => {
+                            target.textContent = 'Copied!';
+                            setTimeout(() => { target.textContent = 'Copy'; }, 2000);
+                        });
+                    }
+                });
+
+                // Mobile Navigation
+                document.querySelector('header').addEventListener('click', (e) => {
+                    const hamburger = e.target.closest('.hamburger-menu');
+                    if (hamburger) {
+                        const nav = document.querySelector('header nav');
+                        nav.classList.toggle('nav-active');
+                        hamburger.classList.toggle('active');
+                    }
+                });
+            }
+
+            // --- DATA HANDLING ---
+
+            /**
+             * Loads books from localStorage or seeds initial data.
+             */
+            function loadBooks() {
+                const storedBooks = localStorage.getItem('books');
+                if (storedBooks) {
+                    app.books = JSON.parse(storedBooks);
+                } else {
+                    app.books = [{
+                        id: 1,
+                        title: 'The Midnight Library',
+                        author: 'Matt Haig',
+                        price: 250.00,
+                        description: 'Between life and death there is a library... Would you have done anything different, if you had the chance to undo your regrets?',
+                        coverImage: 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1602190253l/52578297.jpg',
+                        pdfLink: '#'
+                    }];
+                    localStorage.setItem('books', JSON.stringify(app.books));
+                }
+            }
+
+            /**
+             * Saves the current book array to localStorage.
+             */
+            function saveBooks() {
+                localStorage.setItem('books', JSON.stringify(app.books));
+            }
+            
+            // --- UI & PAGE-SPECIFIC SETUP ---
+
+            function setupHeader() {
+                const header = document.querySelector('header');
+                let navLinks = `
+                    <li><a data-page="page-home">Home</a></li>
+                    <li><a data-page="page-all-books">Books</a></li>
+                `;
+                if (app.currentUser) {
+                    navLinks += `
+                        <li><a data-page="page-orders">Your Orders</a></li>
+                        <li style="color: #555; font-weight: 500;">Hi, ${app.currentUser.name.split(' ')[0]}</li>
+                        <li><a href="#" id="logout-btn" class="btn">Logout</a></li>
+                    `;
+                } else {
+                    navLinks += `
+                        <li><a data-page="page-admin">Admin</a></li>
+                        <li><a data-page="page-signin" class="btn">Sign In</a></li>
+                    `;
+                }
+                header.innerHTML = `
+                    <div class="container">
+                        <a data-page="page-home" class="logo">ARN Book Store</a>
+                        <button class="hamburger-menu" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+                    </div>
+                    <nav><ul>${navLinks}</ul></nav>
+                `;
+            }
+
+            function setupFooter() {
+                const footer = document.querySelector('footer');
+                footer.innerHTML = `<div class="container"><p>&copy; ${new Date().getFullYear()} ARN Book Store. All Rights Reserved.</p></div>`;
+            }
+
+            function renderBookGrid(books, containerId) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                if (books.length === 0) {
+                    container.innerHTML = '<p>No books found.</p>';
+                    return;
+                }
+                books.forEach(book => {
+                    container.innerHTML += `
+                        <div class="book-card">
+                            <a data-page="page-book-details" data-book-id="${book.id}">
+                                <img src="${book.coverImage}" alt="${book.title}" loading="lazy">
+                            </a>
+                            <div class="book-card-content">
+                                <h3>${book.title}</h3>
+                                <p>by ${book.author}</p>
+                                <p class="price">৳${book.price.toFixed(2)}</p>
+                                <a data-page="page-book-details" data-book-id="${book.id}" class="btn btn-secondary">View Details</a>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            // --- PAGE SETUP FUNCTIONS ---
+
+            function setupHomePage() {
+                renderBookGrid(app.books.slice(0, 4), 'featured-books-grid');
+                const form = document.getElementById('home-search-form');
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const query = e.target.q.value;
+                    showPage('page-all-books');
+                    setTimeout(() => {
+                        const searchInput = document.getElementById('search-input');
+                        searchInput.value = query;
+                        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    }, 50);
+                };
+            }
+
+            function setupAllBooksPage() {
+                renderBookGrid(app.books, 'all-books-grid');
+                const searchInput = document.getElementById('search-input');
+                searchInput.oninput = (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const filteredBooks = app.books.filter(b => b.title.toLowerCase().includes(searchTerm) || b.author.toLowerCase().includes(searchTerm));
+                    renderBookGrid(filteredBooks, 'all-books-grid');
+                };
+            }
+
+            function renderBookDetails(bookId) {
+                const container = document.getElementById('book-details-container');
+                const book = app.books.find(b => b.id === bookId);
+                if (book) {
+                    document.title = `${book.title} - ARN Book Store`;
+                    container.innerHTML = `
+                        <div class="book-details-layout">
+                            <div class="book-cover-large"><img src="${book.coverImage}" alt="${book.title}"></div>
+                            <div class="book-info">
+                                <h1>${book.title}</h1>
+                                <p class="author">by ${book.author}</p>
+                                <p class="description">${book.description}</p>
+                                <p class="price">৳${book.price.toFixed(2)}</p>
+                                <a class="btn btn-primary" data-page="page-payment" data-book-id="${book.id}">Buy Now</a>
+                                <div class="book-preview">
+                                    <h3>Sample Preview</h3>
+                                    <img src="${book.coverImage}" alt="Book Preview" style="max-width: 200px; border: 1px solid #ddd;">
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    container.innerHTML = '<p class="section-title">Book not found.</p>';
+                }
+            }
+            
+            function setupSignInPage() {
+                const form = document.getElementById('signin-form');
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('signin-email').value;
+                    const password = document.getElementById('signin-password').value;
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    const user = users.find(u => u.email === email && u.password === password);
+                    if (user) {
+                        app.currentUser = user;
+                        sessionStorage.setItem('currentUser', JSON.stringify(user));
+                        alert(`Welcome back, ${user.name}!`);
+                        setupHeader();
+                        showPage('page-home');
+                    } else {
+                        alert('Invalid email or password.');
+                    }
+                };
+            }
+            
+            function setupSignUpPage() {
+                 const form = document.getElementById('signup-form');
+                 form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('signup-name').value;
+                    const email = document.getElementById('signup-email').value;
+                    const password = document.getElementById('signup-password').value;
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+                    if (users.some(user => user.email === email)) {
+                        alert('An account with this email already exists.');
+                        return;
+                    }
+                    users.push({ name, email, password });
+                    localStorage.setItem('users', JSON.stringify(users));
+                    alert('Sign up successful! Please sign in.');
+                    showPage('page-signin');
+                 };
+            }
+
+            function setupOrdersPage() {
+                const ordersList = document.getElementById('orders-list');
+                if (!app.currentUser) {
+                    ordersList.innerHTML = '<h3>Please <a data-page="page-signin">sign in</a> to view your orders.</h3>';
+                    return;
+                }
+                ordersList.innerHTML = '<p>Loading your orders...</p>';
+                database.ref('orders').orderByChild('userEmail').equalTo(app.currentUser.email).on('value', (snapshot) => {
+                    ordersList.innerHTML = '';
+                    if (snapshot.exists()) {
+                        let orders = [];
+                        snapshot.forEach(child => orders.push(child.val()));
+                        orders.reverse().forEach(order => { // Show newest first
+                            const orderCard = document.createElement('div');
+                            orderCard.className = 'order-card';
+                            let statusInfo = (order.status === 'Approved')
+                                ? `<a href="${order.bookPdfLink}" class="btn btn-primary" download>Download eBook</a>`
+                                : `<p>Status: <strong style="color: ${order.status === 'Rejected' ? 'red' : 'orange'};">${order.status}</strong>${order.status === 'Pending' ? ' (Under Review)' : ''}</p>`;
+                            orderCard.innerHTML = `<h4>${order.bookTitle}</h4><p><strong>Transaction ID:</strong> ${order.trxId}</p>${statusInfo}`;
+                            ordersList.appendChild(orderCard);
+                        });
+                    } else {
+                        ordersList.innerHTML = '<p>You have not placed any orders yet.</p>';
+                    }
+                });
+            }
+
+            function setupPaymentPage(bookId) {
+                const wrapper = document.getElementById('payment-content-wrapper');
+                const book = app.books.find(b => b.id === bookId);
+                if (!book) { wrapper.innerHTML = '<h1 class="section-title">Error: Book not found.</h1>'; return; }
+
+                wrapper.innerHTML = `
+                    <h1 class="section-title">Complete Your Payment</h1>
+                    <div class="payment-book-info"><h2>${book.title}</h2><p>by ${book.author}</p><h3>Amount to Send: ৳${book.price.toFixed(2)} BDT</h3></div>
+                    <div id="payment-instructions">
+                        <h3>Follow these steps:</h3>
+                        <ol class="payment-steps">
+                            <li>Open your bKash or Nagad app.</li><li>Select the "Send Money" option.</li>
+                            <li>Enter one of the numbers below:
+                                <div class="payment-number-container"><span>bKash: <strong>01729405568</strong></span><button class="copy-btn" data-number="01729405568">Copy</button></div>
+                                <div class="payment-number-container"><span>Nagad: <strong>01729405568</strong></span><button class="copy-btn" data-number="01729405568">Copy</button></div>
+                            </li>
+                            <li>Enter the book amount and complete the payment.</li><li>Save the <strong>Transaction ID (TrxID)</strong> from the confirmation message.</li>
+                        </ol>
+                        <button id="proceed-btn" class="btn btn-primary" style="width: 100%;">I Have Paid, Continue</button>
+                    </div>
+                    <div id="trxid-form-section" style="display: none;">
+                        <h3>Verify Your Payment</h3>
+                        <p>Please enter your email and the Transaction ID. We will review your payment shortly.</p>
+                        <form id="trxid-form">
+                            <div class="form-group"><label for="customer-email">Your Email Address</label><input type="email" id="customer-email" required value="${app.currentUser.email}"></div>
+                            <div class="form-group"><label for="trxid">Transaction ID (TrxID)</label><input type="text" id="trxid" placeholder="e.g., 9C4B7F1D8E" required></div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Submit for Verification</button>
+                        </form>
+                    </div>`;
+
+                document.getElementById('proceed-btn').onclick = () => {
+                    document.getElementById('payment-instructions').style.display = 'none';
+                    document.getElementById('trxid-form-section').style.display = 'block';
+                };
+
+                document.getElementById('trxid-form').onsubmit = (e) => {
+                    e.preventDefault();
+                    const submitBtn = e.target.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true; submitBtn.textContent = 'Submitting...';
+
+                    const newOrder = {
+                        userEmail: document.getElementById('customer-email').value.trim(),
+                        bookId: book.id, bookTitle: book.title, bookPrice: book.price, bookPdfLink: book.pdfLink,
+                        trxId: document.getElementById('trxid').value.trim(), status: 'Pending', timestamp: new Date().toISOString()
+                    };
+
+                    database.ref('orders').push(newOrder).then(() => {
+                        sendDiscordNotification(newOrder);
+                        wrapper.innerHTML = `<div class="payment-book-info" style="border-bottom:none; padding-bottom:0;"><h1 class="section-title">✅ Order Submitted!</h1><p style="text-align:center;">Thank you! Your order is now pending approval.<br><br>You can check its status in the <a data-page="page-orders"><strong>Your Orders</strong></a> section.</p></div>`;
+                    }).catch(err => {
+                        alert('Error submitting order.'); console.error(err);
+                        submitBtn.disabled = false; submitBtn.textContent = 'Submit for Verification';
+                    });
+                };
+            }
+
+            function sendDiscordNotification(order) {
+                const webhookURL = 'https://discord.com/api/webhooks/1403276663478812763/QjdRIwnM0gduzyF1fxYHK-CMNOhfciCCSO9-cVsBNzkaAYaBKoYr0T_esAevTL0lYadY';
+                const userId = '1403272889829953576';
+                if (!webhookURL) return;
+                fetch(webhookURL, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: `<@${userId}>, you have a new order!`, username: "ARN Book Store Bot", avatar_url: "https://i.imgur.com/4M34hi2.png",
+                        embeds: [{
+                            title: "🔔 New Order Request!", color: 16761095,
+                            fields: [{ name: "Book Title", value: order.bookTitle, inline: true },{ name: "Price", value: `৳${order.bookPrice.toFixed(2)}`, inline: true },{ name: "Customer Email", value: order.userEmail, inline: false },{ name: "Transaction ID", value: `\`${order.trxId}\``, inline: false }],
+                            footer: { text: `Order submitted at ${new Date(order.timestamp).toLocaleString()}` }
+                        }]
+                    })
+                }).catch(console.error);
+            }
+
+            // --- ADMIN-SPECIFIC LOGIC ---
+            
+            function setupAdminPage() {
+                if (app.isAdmin) {
+                    showAdminPanel();
+                } else {
+                    document.getElementById('admin-login-section').style.display = 'block';
+                    document.getElementById('admin-panel').style.display = 'none';
+                    document.getElementById('admin-login-form').onsubmit = (e) => {
+                        e.preventDefault();
+                        const user = document.getElementById('admin-username').value;
+                        const pass = document.getElementById('admin-password').value;
+                        if (user === 'admin' && pass === '@Ronna$161815131') {
+                            app.isAdmin = true;
+                            sessionStorage.setItem('isAdminLoggedIn', 'true');
+                            showAdminPanel();
+                        } else {
+                            alert('Invalid credentials.');
+                        }
+                    };
+                }
+            }
+            
+            function showAdminPanel() {
+                document.getElementById('admin-login-section').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                renderAdminBookTable();
+                loadOrderRequests();
+                setupAdminForms();
+            }
+
+            function setupAdminForms() {
+                const form = document.getElementById('book-form');
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    const bookId = document.getElementById('book-id').value;
+                    let coverImage = document.getElementById('coverImageURL').value;
+                    if (bookId) { // Editing
+                        const bookToEdit = app.books.find(b => b.id === parseInt(bookId));
+                        if (coverImage === "") coverImage = bookToEdit.coverImage;
+                    } else if (coverImage === "") { // Adding
+                        alert('Please wait for cover image to upload.'); return;
+                    }
+                    
+                    const bookData = {
+                        id: bookId ? parseInt(bookId) : Date.now(),
+                        title: document.getElementById('book-title').value,
+                        author: document.getElementById('book-author').value,
+                        price: parseFloat(document.getElementById('book-price').value),
+                        description: document.getElementById('book-description').value,
+                        coverImage: coverImage,
+                        pdfLink: document.getElementById('pdfLink').value
+                    };
+                    
+                    if (bookId) {
+                        app.books = app.books.map(b => b.id === bookData.id ? bookData : b);
+                    } else { app.books.push(bookData); }
+                    
+                    saveBooks();
+                    form.reset();
+                    document.getElementById('uploadStatus').textContent = 'Select a new image to upload.';
+                    document.getElementById('form-title').textContent = 'Add New Book';
+                    renderAdminBookTable();
+                };
+
+                document.getElementById('coverImageFile').onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const apiKey = '86d74497d9872a20d5a4e97bfe42e9af';
+                    const status = document.getElementById('uploadStatus');
+                    status.textContent = 'Uploading...';
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, { method: 'POST', body: formData })
+                        .then(res => res.json()).then(result => {
+                            if (result.success) {
+                                document.getElementById('coverImageURL').value = result.data.url;
+                                status.textContent = `✅ Upload successful!`;
+                            } else { throw new Error(result.error.message); }
+                        }).catch(err => { status.textContent = `❌ Upload failed: ${err.message}`; });
+                };
+            }
+
+            function renderAdminBookTable() {
+                const tableBody = document.getElementById('book-list-table');
+                tableBody.innerHTML = '';
+                app.books.forEach(book => {
+                    tableBody.innerHTML += `<tr><td>${book.title}</td><td>${book.author}</td><td>৳${book.price.toFixed(2)}</td>
+                        <td><button class="btn btn-secondary edit-btn" data-id="${book.id}">Edit</button>
+                            <button class="btn btn-danger delete-btn" data-id="${book.id}">Delete</button></td></tr>`;
+                });
+            }
+
+            function handleAdminEditBook(target) {
+                const book = app.books.find(b => b.id === parseInt(target.dataset.id));
+                if (book) {
+                    document.getElementById('form-title').textContent = 'Edit Book';
+                    document.getElementById('book-id').value = book.id;
+                    document.getElementById('book-title').value = book.title;
+                    document.getElementById('book-author').value = book.author;
+                    document.getElementById('book-price').value = book.price;
+                    document.getElementById('book-description').value = book.description;
+                    document.getElementById('coverImageURL').value = book.coverImage;
+                    document.getElementById('pdfLink').value = book.pdfLink;
+                    window.scrollTo(0, 0);
+                }
+            }
+
+            function handleAdminDeleteBook(target) {
+                if (confirm('Are you sure you want to delete this book?')) {
+                    app.books = app.books.filter(b => b.id !== parseInt(target.dataset.id));
+                    saveBooks();
+                    renderAdminBookTable();
+                }
+            }
+
+            function loadOrderRequests() {
+                const tableBody = document.getElementById('order-requests-tbody');
+                database.ref('orders').orderByChild('status').equalTo('Pending').on('value', (snapshot) => {
+                    tableBody.innerHTML = '';
+                    if (snapshot.exists()) {
+                        snapshot.forEach((child) => {
+                            const order = child.val();
+                            tableBody.innerHTML += `<tr><td>${order.userEmail}</td><td>${order.bookTitle}</td><td>${order.trxId}</td><td>
+                                <button class="btn btn-primary approve-btn" data-id="${child.key}">Approve</button>
+                                <button class="btn btn-danger reject-btn" data-id="${child.key}">Reject</button></td></tr>`;
+                        });
+                    } else {
+                        tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No pending orders.</td></tr>';
+                    }
+                });
+            }
+
+            function handleAdminApproveOrder(target) {
+                database.ref('orders/' + target.dataset.id).update({ status: 'Approved' });
+            }
+
+            function handleAdminRejectOrder(target) {
+                database.ref('orders/' + target.dataset.id).update({ status: 'Rejected' });
+            }
+            
+            // --- START THE APP ---
+            init();
+        });
+    </script>
+</body>
+</html>
