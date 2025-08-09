@@ -111,7 +111,7 @@
                 <div id="admin-login-section" class="auth-form-container">
                     <h1 class="section-title">Admin Login</h1>
                     <form id="admin-login-form">
-                        <div class="form-group"><label for="admin-username">Username</label><input type="text" id="admin-username" required></div>
+                        <div class="form-group"><label for="admin-email">Admin Email</label><input type="email" id="admin-email" required></div>
                         <div class="form-group"><label for="admin-password">Password</label><input type="password" id="admin-password" required></div>
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
@@ -183,7 +183,9 @@
                 pages: document.querySelectorAll('.page-container'),
                 currentUser: null,
                 isAdmin: false,
-                books: []
+                books: [],
+                // *** IMPORTANT: SET YOUR ADMIN EMAIL HERE ***
+                ADMIN_EMAIL: "aronnosaha161@gmail.com" // <--- REPLACE THIS WITH THE ADMIN EMAIL YOU CREATED
             };
 
             // --- CORE APP LOGIC ---
@@ -198,26 +200,24 @@
                 attachGlobalListeners();
                 setupFooter();
 
-                // NEW: Centralized auth state management
                 auth.onAuthStateChanged(user => {
                     if (user) {
-                        // User is signed in.
                         database.ref('users/' + user.uid).once('value').then(snapshot => {
                             app.currentUser = { uid: user.uid, email: user.email, name: snapshot.val()?.name || 'User' };
+                            // Check if the signed-in user is the admin
+                            app.isAdmin = (app.currentUser.email === app.ADMIN_EMAIL);
                             setupHeader();
                         });
                     } else {
-                        // User is signed out.
                         app.currentUser = null;
+                        app.isAdmin = false;
                         setupHeader();
                     }
                 });
 
-                // NEW: Centralized book data management (Real-time!)
                 database.ref('books').on('value', (snapshot) => {
                     const booksData = snapshot.val();
                     app.books = booksData ? Object.keys(booksData).map(key => ({ id: key, ...booksData[key] })) : [];
-                    // If a book list is currently visible, re-render it
                     if (document.getElementById('page-home').style.display === 'block') setupHomePage();
                     if (document.getElementById('page-all-books').style.display === 'block') setupAllBooksPage();
                     if (document.getElementById('page-admin').style.display === 'block') renderAdminBookTable();
@@ -266,7 +266,7 @@
                             showPage(pageId, bookId ? { id: bookId } : null);
                         }
                     }
-                    if (target.id === 'logout-btn') { e.preventDefault(); auth.signOut(); sessionStorage.removeItem('isAdminLoggedIn'); app.isAdmin = false; alert('You are logged out.'); showPage('page-home'); }
+                    if (target.id === 'logout-btn') { e.preventDefault(); auth.signOut(); alert('You are logged out.'); showPage('page-home'); }
                     if (target.classList.contains('edit-btn')) handleAdminEditBook(target);
                     if (target.classList.contains('delete-btn')) handleAdminDeleteBook(target);
                     if (target.classList.contains('approve-btn')) database.ref('orders/' + target.dataset.id).update({ status: 'Approved' });
@@ -399,9 +399,21 @@
                 document.getElementById('admin-panel').style.display = 'none';
                 document.getElementById('admin-login-form').onsubmit = (e) => {
                     e.preventDefault();
-                    if (document.getElementById('admin-username').value === 'admin' && document.getElementById('admin-password').value === '@Ronna$161815131') {
-                        app.isAdmin = true; sessionStorage.setItem('isAdminLoggedIn', 'true'); showAdminPanel();
-                    } else { alert('Invalid credentials.'); }
+                    const email = document.getElementById('admin-email').value;
+                    const password = document.getElementById('admin-password').value;
+
+                    // *** THIS IS THE MAIN FIX ***
+                    auth.signInWithEmailAndPassword(email, password)
+                        .then(userCredential => {
+                            if (userCredential.user.email === app.ADMIN_EMAIL) {
+                                app.isAdmin = true;
+                                showAdminPanel();
+                            } else {
+                                auth.signOut(); // Log out non-admin users immediately
+                                alert('Access Denied. This account is not an administrator.');
+                            }
+                        })
+                        .catch(err => alert(`Admin Login Failed: ${err.message}`));
                 };
             }
             
@@ -419,8 +431,7 @@
                     const bookData = { title: document.getElementById('book-title').value, author: document.getElementById('book-author').value, price: parseFloat(document.getElementById('book-price').value), description: document.getElementById('book-description').value, coverImage: document.getElementById('coverImageURL').value, pdfLink: document.getElementById('pdfLink').value };
                     if (!bookData.coverImage) { alert('Please upload a cover image first.'); return; }
                     const ref = bookId ? database.ref('books/' + bookId) : database.ref('books').push();
-                    bookData.id = ref.key;
-                    ref.set(bookData).then(() => { form.reset(); document.getElementById('uploadStatus').textContent = 'Select a new image.'; alert('Book saved!'); }).catch(err => alert(err.message));
+                    ref.set(bookData).then(() => { form.reset(); document.getElementById('uploadStatus').textContent = 'Select a new image.'; alert('Book saved successfully!'); }).catch(err => alert(err.message));
                 };
                 document.getElementById('coverImageFile').onchange = (e) => {
                     const file = e.target.files[0]; if (!file) return;
